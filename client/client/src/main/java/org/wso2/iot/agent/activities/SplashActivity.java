@@ -82,8 +82,13 @@ public class SplashActivity extends Activity {
 
     private void startActivity() {
         if (instantiatedActivityClass == null) {
-            if (Preference.hasPreferenceKey(this, Constants.TOKEN_EXPIRED) || Constants.DEFAULT_HOST != null) {
-                instantiatedActivityClass = AuthenticationActivity.class;
+            if (Preference.hasPreferenceKey(this, Constants.TOKEN_EXPIRED) ||
+                    (Constants.DEFAULT_HOST != null && !Preference.getBoolean(this, Constants.PreferenceFlag.DEVICE_ACTIVE))) {
+                if (Constants.IS_CLOUD) {
+                    instantiatedActivityClass = DisclaimerActivity.class;
+                } else {
+                    instantiatedActivityClass = AuthenticationActivity.class;
+                }
             } else if (Preference.getBoolean(this, Constants.PreferenceFlag.DEVICE_ACTIVE)) {
                 instantiatedActivityClass = AlreadyRegisteredActivity.class;
             } else if (Constants.OWNERSHIP_COSU.equals(Constants.DEFAULT_OWNERSHIP)) {

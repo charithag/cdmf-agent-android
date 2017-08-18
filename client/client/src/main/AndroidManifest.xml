@@ -40,7 +40,7 @@
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-    <uses-permission android:name="org.wso2.emm.system.service.permission.ACCESS" />
+    <uses-permission android:name="org.wso2.iot.system.service.permission.ACCESS" />
 
     <permission android:name="android.permission.READ_LOGS" />
     <permission
@@ -183,6 +183,9 @@
         <activity
             android:name=".AuthenticationErrorActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.DisclaimerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".activities.ServerConfigsActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
