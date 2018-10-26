@@ -73,7 +73,7 @@ public class MessageProcessor implements APIResultCallBack {
 
     private static volatile long invokedTimestamp = 0;
     private static List<Operation> replyPayload;
-    private static volatile boolean isInCriticalPath = true;
+    private static volatile boolean isInCriticalPath = false;
     private static volatile long lastSyncAt = 0L;
     private Context context;
     private String deviceId;
