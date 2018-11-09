@@ -436,19 +436,14 @@ public class ApplicationManager {
      * Cancels ongoing download if there any.
      */
     public void cancelOngoingDownload(){
-        if (downloadReference != -1 && isDownloadManagerAvailable(context)) {
-            final DownloadManager downloadManager = (DownloadManager) context
-                    .getSystemService(Context.DOWNLOAD_SERVICE);
-            if (downloadManager == null) {
-                return;
-            }
+        final DownloadManager downloadManager = (DownloadManager) context
+                .getSystemService(Context.DOWNLOAD_SERVICE);
+        if (downloadManager != null && downloadReference != -1) {
             downloadManager.remove(downloadReference);
             downloadReference = -1;
-        } else {
-            if (volleyDownloadRequest != null){
-                volleyDownloadRequest.cancel();
-                volleyDownloadRequest = null;
-            }
+        } else if (volleyDownloadRequest != null){
+            volleyDownloadRequest.cancel();
+            volleyDownloadRequest = null;
         }
     }
 
@@ -468,26 +463,6 @@ public class ApplicationManager {
         if (url.contains(Constants.APP_DOWNLOAD_ENDPOINT) && Constants.APP_MANAGER_HOST != null) {
             url = url.substring(url.lastIndexOf("/"), url.length());
             this.appUrl = Constants.APP_MANAGER_HOST + Constants.APP_DOWNLOAD_ENDPOINT + url;
-        } else if (url.contains(Constants.APP_DOWNLOAD_ENDPOINT)) {
-            url = url.substring(url.lastIndexOf("/"), url.length());
-            String ipSaved = Constants.DEFAULT_HOST;
-            String prefIP = Preference.getString(context, Constants.PreferenceFlag.IP);
-            if (prefIP != null) {
-                ipSaved = prefIP;
-            }
-            ServerConfig utils = new ServerConfig();
-            if (ipSaved != null && !ipSaved.isEmpty()) {
-                utils.setServerIP(ipSaved);
-                this.appUrl = utils.getAPIServerURL(context) + Constants.APP_DOWNLOAD_ENDPOINT + url;
-            } else {
-                String errorText = "There is no valid IP to contact the server";
-                Preference.putString(context, context.getResources().getString(
-                        R.string.app_install_status), Constants.AppState.DOWNLOAD_FAILED);
-                Preference.putString(context, context.getResources().getString(
-                        R.string.app_install_failed_message), errorText);
-                Log.e(TAG, errorText);
-                return;
-            }
         } else {
             this.appUrl = url;
         }
@@ -496,7 +471,8 @@ public class ApplicationManager {
                 Calendar.getInstance().getTimeInMillis());
         Preference.putString(context, context.getResources().getString(
                 R.string.app_install_status), Constants.AppState.DOWNLOAD_STARTED);
-        if (isDownloadManagerAvailable(context)) {
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        if (downloadManager != null) {
             if (Constants.DEBUG_MODE_ENABLED) {
                 Log.d(TAG, "Using download manager to download the application");
             }
@@ -725,20 +701,6 @@ public class ApplicationManager {
                 operation.setOperationResponse(message);
         }
         return operation;
-    }
-
-    /**
-     * Checks whether the DownloadManager is available on the device.
-     *
-     * @param context - Context of the calling activity.
-     */
-    public boolean isDownloadManagerAvailable(Context context) {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setClassName(resources.getString(R.string.android_download_manager_ui_resolver),
-                resources.getString(R.string.android_download_manager_list_resolver));
-        return context.getPackageManager().queryIntentActivities(intent,
-                PackageManager.MATCH_DEFAULT_ONLY).size() > 0;
     }
 
     private void removeExistingFile() {
