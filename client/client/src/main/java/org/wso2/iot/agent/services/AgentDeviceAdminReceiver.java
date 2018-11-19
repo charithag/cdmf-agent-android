@@ -64,7 +64,6 @@ public class AgentDeviceAdminReceiver extends DeviceAdminReceiver implements API
 
         if (!Constants.OWNERSHIP_COSU.equals(Constants.DEFAULT_OWNERSHIP)) {
             Preference.putBoolean(context, Constants.PreferenceFlag.DEVICE_ACTIVE, true);
-            LocalNotification.startPolling(context);
         }
     }
 

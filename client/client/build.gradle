@@ -409,8 +409,8 @@ android {
             // This is to listen to Runtime information such as CPU. If set to true,
             // events will be published.
             buildConfigField "boolean", "RUNTIME_STATE_LISTENER", "false"
-            // The time the alarm should first go off, in milliseconds. The default value is 1000.
-            buildConfigField "int", "DEFAULT_START_TIME", "10000"
+            // The time the alarm should first go off, in milliseconds. The default value is 20000.
+            buildConfigField "int", "DEFAULT_START_TIME", "20000"
             // The interval between subsequent repeats of the alarm, in milliseconds.
             // The default value is 30000.
             buildConfigField "int", "DEFAULT_INTERVAL", "60000"
@@ -677,8 +677,8 @@ android {
             // This is to listen to Runtime information such as CPU. If set to true,
             // events will be published.
             buildConfigField "boolean", "RUNTIME_STATE_LISTENER", "false"
-            // The time the alarm should first go off, in milliseconds. The default value is 1000.
-            buildConfigField "int", "DEFAULT_START_TIME", "10000"
+            // The time the alarm should first go off, in milliseconds. The default value is 20000.
+            buildConfigField "int", "DEFAULT_START_TIME", "20000"
             // The interval between subsequent repeats of the alarm, in milliseconds.
             // The default value is 30000.
             buildConfigField "int", "DEFAULT_INTERVAL", "60000"

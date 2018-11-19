@@ -80,6 +80,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 			}
 
 		} else {
+			LocalNotification.setNextPolling(context);
 			if (Constants.DEBUG_MODE_ENABLED) {
 				Log.v(TAG, "Recurring alarm; intent URI: " + intent.toUri(0));
 				Log.d(TAG, "Recurring alarm; Polling pending operations");

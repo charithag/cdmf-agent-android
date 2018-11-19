@@ -21,6 +21,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -38,6 +39,8 @@ import java.util.Locale;
  */
 public class AlarmUtils {
 
+    private static final String TAG = AlarmUtils.class.getSimpleName();
+
     /**
      * Initiates one time alarm device startup.
      * @param context - Application context.
@@ -46,7 +49,7 @@ public class AlarmUtils {
      */
     public static void setOneTimeAlarm(Context context, String time, String operationCode,
                                        Operation operation, String appUrl, String packageUri) throws ParseException {
-        Log.d("AlarmUtils", "Setting one time alarm: " + time);
+        Log.d(TAG, "Setting one time alarm: " + time);
         SimpleDateFormat formatter = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.ENGLISH);
         Date date = formatter.parse(time);
         long startTime = date.getTime();
@@ -74,7 +77,15 @@ public class AlarmUtils {
                         PendingIntent.FLAG_ONE_SHOT);
         AlarmManager alarmManager =
                 (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, startTime, pendingIntent);
+        if (alarmManager == null) {
+            Log.e(TAG, "Alarm manager unavailable");
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, startTime, pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, startTime, pendingIntent);
+        }
     }
 
 }
