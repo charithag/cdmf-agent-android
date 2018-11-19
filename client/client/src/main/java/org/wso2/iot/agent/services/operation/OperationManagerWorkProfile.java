@@ -357,12 +357,12 @@ public class OperationManagerWorkProfile extends OperationManager {
             CommonUtils.allowUnknownSourcesForProfile(getContext(), !isEnable);
         }
         if (isEnable) {
-            getDevicePolicyManager().addUserRestriction(getCdmDeviceAdmin(), getPermissionConstantValue(key));
+            getDevicePolicyManager().addUserRestriction(getCdmDeviceAdmin(), CommonUtils.getPolicyKey(operation.getCode()));
             if (Constants.DEBUG_MODE_ENABLED) {
                 Log.d(TAG, "Restriction added: " + key);
             }
         } else {
-            getDevicePolicyManager().clearUserRestriction(getCdmDeviceAdmin(), getPermissionConstantValue(key));
+            getDevicePolicyManager().clearUserRestriction(getCdmDeviceAdmin(), CommonUtils.getPolicyKey(operation.getCode()));
             if (Constants.DEBUG_MODE_ENABLED) {
                 Log.d(TAG, "Restriction cleared: " + key);
             }
@@ -698,10 +698,5 @@ public class OperationManagerWorkProfile extends OperationManager {
 
     private void enableGooglePlayApps(String packageName) {
         triggerGooglePlayApp(packageName);
-    }
-
-    private String getPermissionConstantValue(String key) {
-        return getContext().getString(getContextResources().getIdentifier(
-                key.toString(), "string", getContext().getPackageName()));
     }
 }

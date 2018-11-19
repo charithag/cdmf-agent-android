@@ -469,12 +469,12 @@ public class OperationManagerCOSU extends OperationManager {
         operation.setStatus(getContextResources().getString(R.string.operation_value_completed));
         getResultBuilder().build(operation);
         if (isEnable) {
-            getDevicePolicyManager().addUserRestriction(getCdmDeviceAdmin(), getPermissionConstantValue(key));
+            getDevicePolicyManager().addUserRestriction(getCdmDeviceAdmin(), CommonUtils.getPolicyKey(operation.getCode()));
             if (Constants.DEBUG_MODE_ENABLED) {
                 Log.d(TAG, "Restriction added: " + key);
             }
         } else {
-            getDevicePolicyManager().clearUserRestriction(getCdmDeviceAdmin(), getPermissionConstantValue(key));
+            getDevicePolicyManager().clearUserRestriction(getCdmDeviceAdmin(), CommonUtils.getPolicyKey(operation.getCode()));
             if (Constants.DEBUG_MODE_ENABLED) {
                 Log.d(TAG, "Restriction cleared: " + key);
             }
@@ -764,11 +764,6 @@ public class OperationManagerCOSU extends OperationManager {
             getResultBuilder().build(operation);
             throw new AndroidAgentException("Invalid JSON format.", e);
         }
-    }
-
-    private String getPermissionConstantValue(String key) {
-        return getContext().getString(getContextResources().getIdentifier(
-                key.toString(), "string", getContext().getPackageName()));
     }
 
 }
