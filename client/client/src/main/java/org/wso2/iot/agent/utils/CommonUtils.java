@@ -745,8 +745,7 @@ public class CommonUtils {
 		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			final DevicePolicyManager manager = (DevicePolicyManager) context
 					.getSystemService(Context.DEVICE_POLICY_SERVICE);
-			if (manager != null && manager.isProfileOwnerApp(context.getApplicationContext()
-					.getPackageName())) {
+			if (manager != null && manager.isProfileOwnerApp(Constants.AGENT_PACKAGE)) {
 				final ComponentName cdmAdmin = new ComponentName(context, AgentDeviceAdminReceiver.class);
 				manager.setSecureSetting(cdmAdmin, Settings.Secure.INSTALL_NON_MARKET_APPS,
 						isEnabled ? "1" : "0");

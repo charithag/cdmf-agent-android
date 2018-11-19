@@ -438,28 +438,24 @@ public class PolicyRevokeHandler {
      *
      * @param operation - Operation object.
      */
-    private void revokeOwnersRestrictionPolicy(Operation operation) throws AndroidAgentException {
+    private void revokeOwnersRestrictionPolicy(Operation operation) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (devicePolicyManager.isDeviceOwnerApp(Constants.AGENT_PACKAGE) ||
                     devicePolicyManager.isProfileOwnerApp(Constants.AGENT_PACKAGE)) {
-                devicePolicyManager.clearUserRestriction(deviceAdmin,getPermissionConstantValue(operation.getCode()));
+                devicePolicyManager.clearUserRestriction(deviceAdmin, CommonUtils.getPolicyKey(operation.getCode()));
             }
         }
     }
 
-    private String getPermissionConstantValue(String key) {
-        return context.getString(resources.getIdentifier(key,"string",context.getPackageName()));
-    }
-
-    private void revokeDeviceOwnerRestrictionPolicy(Operation operation) throws AndroidAgentException {
+    private void revokeDeviceOwnerRestrictionPolicy(Operation operation) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (devicePolicyManager.isDeviceOwnerApp(Constants.AGENT_PACKAGE)) {
-                devicePolicyManager.clearUserRestriction(deviceAdmin,getPermissionConstantValue(operation.getCode()));
+                devicePolicyManager.clearUserRestriction(deviceAdmin, CommonUtils.getPolicyKey(operation.getCode()));
             }
         }
     }
 
-    private void revokeScreenCaptureDisabledPolicy() throws AndroidAgentException {
+    private void revokeScreenCaptureDisabledPolicy() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (devicePolicyManager.isDeviceOwnerApp(Constants.AGENT_PACKAGE) ||
                     devicePolicyManager.isProfileOwnerApp(Constants.AGENT_PACKAGE)) {
