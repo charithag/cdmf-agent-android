@@ -22,6 +22,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.os.Environment;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
@@ -84,11 +85,13 @@ public class AgentApplication extends MultiDexApplication {
             CommonUtils.registerSystemAppReceiver(this);
         }
 
-        String filePath = Environment.getExternalStorageDirectory() + "/logcat-" + System.currentTimeMillis() + ".txt";
-        try {
-            Runtime.getRuntime().exec(new String[]{"logcat", "-f", filePath});
-        } catch (IOException e) {
-            e.printStackTrace();
+        if ((getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+            String filePath = Environment.getExternalStorageDirectory() + "/logcat-" + System.currentTimeMillis() + ".txt";
+            try {
+                Runtime.getRuntime().exec(new String[]{"logcat", "-f", filePath});
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
