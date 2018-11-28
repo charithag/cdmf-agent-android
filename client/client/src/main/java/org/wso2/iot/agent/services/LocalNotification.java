@@ -25,6 +25,7 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
 
+import org.wso2.iot.agent.R;
 import org.wso2.iot.agent.utils.Constants;
 import org.wso2.iot.agent.utils.Preference;
 
@@ -50,7 +51,7 @@ public class LocalNotification {
             notifierType = Constants.NOTIFIER_LOCAL;
         }
         if (Constants.NOTIFIER_LOCAL.equals(notifierType.trim().toUpperCase(Locale.ENGLISH))) {
-            interval = Preference.getInt(context, Constants.PreferenceFlag.shared_pref_frequency);
+            interval = Preference.getInt(context, context.getString(R.string.shared_pref_frequency));
             if (interval <= 0) {
                  interval = Constants.DEFAULT_INTERVAL;
             }

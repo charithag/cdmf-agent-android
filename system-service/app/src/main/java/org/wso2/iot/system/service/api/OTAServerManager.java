@@ -289,13 +289,7 @@ public class OTAServerManager {
         }
     }
 
-    private class DownloadProgressUpdateExecutor implements Executor {
-        public void execute(@NonNull Runnable r) {
-            new Thread(r).start();
-        }
-    }
-
-    private void renameDownloadedFile(String otaPackageName){
+    private void renameDownloadedFile(String downloadedFilename){
         try {
 
             File otaFolder = new File(FileUtils.getOTAPackageFilePath());
@@ -306,7 +300,6 @@ public class OTAServerManager {
                     Log.i(TAG, "Failed to create directory!" + otaFolder.toString());
                 }
             }
-            String downloadedFilename = otaPackageName;
             Log.i(TAG, "moving file from " + downloadedFilename + " to " + FileUtils.getUpgradePackageFilePath());
             File from = new File(downloadedFilename);
             File to = new File(FileUtils.getUpgradePackageFilePath());
@@ -497,6 +490,7 @@ public class OTAServerManager {
 
                             //Get the OTA download file name and stored it in shared preference "firmware_upgrade_file_name_pref"
                             otaPackageName = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                            Uri uri = downloadManager.getUriForDownloadedFile(downloadReference);
                             if (otaPackageName != null && !otaPackageName.isEmpty()) {
                                 if (!isFileNameAvailable) {
                                     Preference.putString(context, context.getResources().
