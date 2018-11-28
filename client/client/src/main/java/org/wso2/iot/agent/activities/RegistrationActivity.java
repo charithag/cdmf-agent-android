@@ -63,6 +63,8 @@ public class RegistrationActivity extends Activity implements APIResultCallBack 
 	private BroadcastReceiver fcmTokenReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			unregisterReceiver(fcmTokenReceiver);
+			isFCMTokenReceiverRegistered = true;
 			CommonDialogUtils.stopProgressDialog(progressDialog);
 			registerDevice();
 		}
@@ -294,12 +296,11 @@ public class RegistrationActivity extends Activity implements APIResultCallBack 
      * to the MDM server so that it can send notifications to the device.
      */
 	private void registerFCM() {
-		String token =  FirebaseInstanceId.getInstance().getToken();
+		String token = Preference.getString(this, Constants.FCM_REG_ID);
 		if(token != null) {
 			if (Constants.DEBUG_MODE_ENABLED){
 				Log.d(TAG, "FCM Token: " + token);
 			}
-			Preference.putString(context, Constants.FCM_REG_ID, token);
 			registerDevice();
 		} else {
 			Log.w(TAG, "FCM Token is null. Will depend on FCMInstanceIdService.");
@@ -311,14 +312,48 @@ public class RegistrationActivity extends Activity implements APIResultCallBack 
 			isFCMTokenReceiverRegistered = true;
 			registerReceiver(fcmTokenReceiver,
 					new IntentFilter(Constants.FCM_TOKEN_REFRESHED_BROADCAST_ACTION));
-			new Handler().postDelayed(new Runnable() {
+			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					unregisterReceiver(fcmTokenReceiver);
-					isFCMTokenReceiverRegistered = false;
-					displayFCMServicesError();
+					int attempts = FCM_TOKEN_WAIT_MILLIS / 5000;
+					String token;
+					while (--attempts > 0) {
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							break;
+						}
+						token = FirebaseInstanceId.getInstance().getToken();
+						if (token == null) {
+							token = Preference.getString(context, Constants.FCM_REG_ID);
+						}
+						if (token != null) {
+							if (Constants.DEBUG_MODE_ENABLED){
+								Log.d(TAG, "FCM Token: " + token);
+							}
+							Preference.putString(context, Constants.FCM_REG_ID, token);
+							new Handler().post(new Runnable() {
+								@Override
+								public void run() {
+									unregisterReceiver(fcmTokenReceiver);
+									isFCMTokenReceiverRegistered = true;
+									CommonDialogUtils.stopProgressDialog(progressDialog);
+									registerDevice();
+								}
+							});
+							return;
+						}
+					}
+					new Handler().post(new Runnable() {
+						@Override
+						public void run() {
+							unregisterReceiver(fcmTokenReceiver);
+							isFCMTokenReceiverRegistered = false;
+							displayFCMServicesError();
+						}
+					});
 				}
-			}, FCM_TOKEN_WAIT_MILLIS);
+			}).start();
 		}
 	}
 
